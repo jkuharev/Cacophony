@@ -3,6 +3,7 @@ import java.io.File;
 import java.io.IOException;
 
 import de.mz.jk.jsix.libs.XFiles;
+import de.mz.jk.jsix.utilities.Settings;
 
 /** Cacophony, , Mar 9, 2018*/
 /**
@@ -19,6 +20,36 @@ public class SymphonyClient
 	private String massLynxSymphonyClientExe = "MassLynxSymphonyClient.exe";
 	private String massLynxSymphonyClientCloneExe = "MassLynxSymphonyClient.external.exe";
 	private String inputFilePath = "C:\\Users\\Administrator\\AppData\\Local\\Temp\\MLCurSmp.external.txt";
+
+	/**
+	 * create a symphony client by using default settings
+	 */
+	public SymphonyClient()
+	{}
+
+	/**
+	 * create a symphony client and load settings from the given user configuration
+	 * and  ensure a clone of MassLynxSymphonyClient.exe exists
+	 */
+	public SymphonyClient(Settings cfg, boolean initClone)
+	{
+		initConfig( cfg );
+		if (initClone) cloneSymphonyClient();
+	}
+
+	/**
+	 * load settings from the given user configuration
+	 * @param cfg
+	 */
+	public void initConfig(Settings cfg)
+	{
+		String symphonyDir = cfg.getStringValue( "symphonySetupFolder", defaultSymphonySetupFolder.getAbsolutePath(), false );
+		String inputFileName = cfg.getStringValue( "symphonyInputFile", "C:\\Users\\Administrator\\AppData\\Local\\Temp\\MLCurSmp.Cacophony.txt", false );
+		String cloneExe = cfg.getStringValue( "symphonyClientCloneExe", "CacophonyClient.exe", false );
+
+		setInputFilePath( inputFileName );
+		setMassLynxSymphonyClientCloneExe( cloneExe );
+	}
 
 	public File getSymphonySetupFolder()
 	{
@@ -47,13 +78,11 @@ public class SymphonyClient
 
 	public File absInputFile()
 	{
-		// etracting temporary path from the envornment did not properly work on the targen machine
-		// String tempPath = XOS.getEnvironmentVariable( "temp", false );
 		File file = new File( inputFilePath ).getAbsoluteFile();
 		return file;
 	}
 
-	public void setInputFilePaath(String inputFileName)
+	public void setInputFilePath(String inputFileName)
 	{
 		this.inputFilePath = inputFileName;
 	}
@@ -73,6 +102,9 @@ public class SymphonyClient
 		return new File( symphonySetupFolder, relativeFilePath );
 	}
 
+	/**
+	 * ensure a clone of MassLynxSymphonyClient.exe exists
+	 */
 	public void cloneSymphonyClient()
 	{
 		File originalExe = absSymphonyFile( massLynxSymphonyClientExe );
