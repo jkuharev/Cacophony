@@ -2,15 +2,14 @@
 package de.mz.jk.cacophony.rmi;
 
 import java.io.File;
-import java.io.Serializable;
 import java.rmi.Remote;
 
 /**
  * <h3>{@link SymphonyConnector}</h3>
- * @author kuh1j
+ * @author Dr. Joerg Kuharev
  * @version 27.08.2018 09:31:20
  */
-public interface SymphonyConnector extends Remote, Serializable
+public interface SymphonyConnector extends Remote
 {
 	/** check if given file path is also valid for the remote partner */
 	public boolean fileExists(File file) throws Exception;

@@ -11,14 +11,14 @@ import de.mz.jk.jsix.libs.XFiles;
 
 /**
  * <h3>{@link SymphonyConnectorImplementation}</h3>
- * @author kuh1j
+ * @author Dr. Joerg Kuharev
  * @version 27.08.2018 09:42:33
  */
 public class SymphonyConnectorImplementation extends UnicastRemoteObject implements SymphonyConnector
 {
 	private SymphonyClient symphonyClient = null;
 
-	protected SymphonyConnectorImplementation(SymphonyClient symphonyClient) throws RemoteException
+	public SymphonyConnectorImplementation(SymphonyClient symphonyClient) throws RemoteException
 	{
 		super();
 		this.symphonyClient = symphonyClient;
