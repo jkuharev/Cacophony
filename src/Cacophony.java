@@ -13,9 +13,10 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-import de.mz.jk.cli.App;
+import de.mz.jk.cacophony.SymphonyClient;
 import de.mz.jk.jsix.libs.XFiles;
 import de.mz.jk.jsix.libs.XJava;
+import de.mz.jk.jsix.os.app.App;
 import de.mz.jk.jsix.ui.TextWindowDragAndDropUI;
 import de.mz.jk.jsix.ui.TextWindowDragAndDropUI.FileActionListener;
 import de.mz.jk.jsix.utilities.Settings;
@@ -103,7 +104,7 @@ public class Cacophony implements FileActionListener, ActionListener
 		String inputFileName = cfg.getStringValue( "symphonyInputFile", "C:\\Users\\Administrator\\AppData\\Local\\Temp\\MLCurSmp.Cacophony.txt", false );
 		String cloneExe = cfg.getStringValue( "symphonyClientCloneExe", "CacophonyClient.exe", false );
 		
-		symphonyClient.setInputFilePaath( inputFileName );
+		symphonyClient.setInputFilePath( inputFileName );
 		symphonyClient.setMassLynxSymphonyClientCloneExe( cloneExe );
 		
 		new File( symphonyDir );

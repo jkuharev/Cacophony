@@ -1,7 +1,10 @@
+package de.mz.jk.cacophony;
+
 import java.io.File;
 import java.io.IOException;
 
 import de.mz.jk.jsix.libs.XFiles;
+import de.mz.jk.jsix.utilities.Settings;
 
 /** Cacophony, , Mar 9, 2018*/
 /**
@@ -11,8 +14,6 @@ import de.mz.jk.jsix.libs.XFiles;
  */
 public class SymphonyClient
 {
-	public static final String eol = System.getProperty("line.separator");
-	
 	public static File defaultSymphonySetupFolder = new File( "C:\\Program Files\\Waters\\Symphony" );
 	private static String defaultMassLynxSymphonyClientExe = "MassLynxSymphonyClient.exe";
 
@@ -20,6 +21,36 @@ public class SymphonyClient
 	private String massLynxSymphonyClientExe = "MassLynxSymphonyClient.exe";
 	private String massLynxSymphonyClientCloneExe = "MassLynxSymphonyClient.external.exe";
 	private String inputFilePath = "C:\\Users\\Administrator\\AppData\\Local\\Temp\\MLCurSmp.external.txt";
+
+	/**
+	 * create a symphony client by using default settings
+	 */
+	public SymphonyClient()
+	{}
+
+	/**
+	 * create a symphony client and load settings from the given user configuration
+	 * and  ensure a clone of MassLynxSymphonyClient.exe exists
+	 */
+	public SymphonyClient(Settings cfg, boolean initClone)
+	{
+		initConfig( cfg );
+		if (initClone) cloneSymphonyClient();
+	}
+
+	/**
+	 * load settings from the given user configuration
+	 * @param cfg
+	 */
+	public void initConfig(Settings cfg)
+	{
+		String symphonyDir = cfg.getStringValue( "symphonySetupFolder", defaultSymphonySetupFolder.getAbsolutePath(), false );
+		String inputFileName = cfg.getStringValue( "symphonyInputFile", "C:\\Users\\Administrator\\AppData\\Local\\Temp\\MLCurSmp.Cacophony.txt", false );
+		String cloneExe = cfg.getStringValue( "symphonyClientCloneExe", "CacophonyClient.exe", false );
+
+		setInputFilePath( inputFileName );
+		setMassLynxSymphonyClientCloneExe( cloneExe );
+	}
 
 	public File getSymphonySetupFolder()
 	{
@@ -48,13 +79,11 @@ public class SymphonyClient
 
 	public File absInputFile()
 	{
-		// etracting temporary path from the envornment did not properly work on the targen machine
-		// String tempPath = XOS.getEnvironmentVariable( "temp", false );
 		File file = new File( inputFilePath ).getAbsoluteFile();
 		return file;
 	}
 
-	public void setInputFilePaath(String inputFileName)
+	public void setInputFilePath(String inputFileName)
 	{
 		this.inputFilePath = inputFileName;
 	}
@@ -74,6 +103,9 @@ public class SymphonyClient
 		return new File( symphonySetupFolder, relativeFilePath );
 	}
 
+	/**
+	 * ensure a clone of MassLynxSymphonyClient.exe exists
+	 */
 	public void cloneSymphonyClient()
 	{
 		File originalExe = absSymphonyFile( massLynxSymphonyClientExe );
@@ -115,42 +147,42 @@ public class SymphonyClient
 	private String getConfigFileContent(String inputFileName)
 	{
 		return 
-			"<?xml version=\"1.0\" encoding=\"utf-8\" ?>" + eol +
-			"<configuration>" + eol +
-			"  <configSections>" + eol +
-			"    <section name=\"log4net\" type=\"log4net.Config.Log4NetConfigurationSectionHandler, log4net\" />" + eol +
-			"  </configSections>" + eol +
-			"  <log4net>" + eol +
-			"    <appender name=\"RollingFile\" type=\"log4net.Appender.RollingFileAppender\">" + eol +
-			"      <file type=\"log4net.Util.PatternString\">" + eol +
-			"        <conversionPattern value=\"${ProgramData}/Waters/Symphony/Log/MassLynx %env{USERNAME}/MassLynxSymphonyClient.log\" />" + eol +
-			"      </file>" + eol +
-			"      <PreserveLogFileNameExtension value=\"true\" />" + eol +
-			"      <appendToFile value=\"true\" />" + eol +
-			"      <rollingStyle value=\"Size\" />" + eol +
-			"      <maxSizeRollBackups value=\"10\" />" + eol +
-			"      <maximumFileSize value=\"10MB\" />" + eol +
-			"      <layout type=\"log4net.Layout.PatternLayout\">" + eol +
-			"        <conversionPattern value=\"%date [%thread] %property{username} %-5level %logger - %message%newline\" />" + eol +
-			"      </layout>" + eol +
-			"    </appender>" + eol +
-			"    <root>" + eol +
-			"      <level value=\"DEBUG\" />" + eol +
-			"      <appender-ref ref=\"RollingFile\" />" + eol +
-			"    </root>" + eol +
-			"  </log4net>" + eol +
-			"  <appSettings>" + eol +
-				"    <add key=\"InputFile\" value=\"" + inputFileName + "\"/>" + eol +
-			"  </appSettings>" + eol +
+			"<?xml version=\"1.0\" encoding=\"utf-8\" ?>\n" +
+			"<configuration>\n" +
+			"  <configSections>\n" +
+			"    <section name=\"log4net\" type=\"log4net.Config.Log4NetConfigurationSectionHandler, log4net\" />\n" +
+			"  </configSections>\n" +
+			"  <log4net>\n" +
+			"    <appender name=\"RollingFile\" type=\"log4net.Appender.RollingFileAppender\">\n" +
+			"      <file type=\"log4net.Util.PatternString\">\n" +
+			"        <conversionPattern value=\"${ProgramData}/Waters/Symphony/Log/MassLynx %env{USERNAME}/MassLynxSymphonyClient.log\" />\n" +
+			"      </file>\n" +
+			"      <PreserveLogFileNameExtension value=\"true\" />\n" +
+			"      <appendToFile value=\"true\" />\n" +
+			"      <rollingStyle value=\"Size\" />\n" +
+			"      <maxSizeRollBackups value=\"10\" />\n" +
+			"      <maximumFileSize value=\"10MB\" />\n" +
+			"      <layout type=\"log4net.Layout.PatternLayout\">\n" +
+			"        <conversionPattern value=\"%date [%thread] %property{username} %-5level %logger - %message%newline\" />\n" +
+			"      </layout>\n" +
+			"    </appender>\n" +
+			"    <root>\n" +
+			"      <level value=\"DEBUG\" />\n" +
+			"      <appender-ref ref=\"RollingFile\" />\n" +
+			"    </root>\n" +
+			"  </log4net>\n" +
+			"  <appSettings>\n" +
+				"    <add key=\"InputFile\" value=\"" + inputFileName + "\"/>\n" +
+			"  </appSettings>\n" +
 			"</configuration>";
 	}
 
 	private String getInputFileContent(File rawFile, File xmlFile)
 	{
-		return "[Sample]" + eol +
-				"Data File Name=" + rawFile.getAbsolutePath() + eol +
-				"Process Parameters=" + xmlFile.getAbsolutePath() + eol +
-				"Process Options=" + eol;
+		return "[Sample]\n" +
+				"Data File Name=" + rawFile.getAbsolutePath() + "\n" +
+				"Process Parameters=" + xmlFile.getAbsolutePath() + "\n" +
+				"Process Options=\n";
 	}
 
 	public void writeInputFile(File rawFile, File xmlFile) throws Exception

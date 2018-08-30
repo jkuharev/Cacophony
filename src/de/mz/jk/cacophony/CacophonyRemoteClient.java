@@ -1,3 +1,4 @@
+package de.mz.jk.cacophony;
 /** Cacophony, de.mz.jk.cacophony.rmi, 29.08.2018*/
 
 
@@ -12,29 +13,26 @@ import java.rmi.registry.Registry;
 
 import javax.swing.*;
 
-import de.mz.jk.cacophony.SymphonyClient;
 import de.mz.jk.cacophony.rmi.SymphonyConnector;
-import de.mz.jk.cacophony.rmi.SymphonyConnectorImplementation;
 import de.mz.jk.jsix.libs.XJava;
 import de.mz.jk.jsix.ui.JTextAreaOutputStream;
 import de.mz.jk.jsix.utilities.Settings;
 
 /**
- * <h3>{@link CacophonyRemoteServer}</h3>
+ * <h3>{@link CacophonyRemoteClient}</h3>
  * @author kuh1j
  * @version 29.08.2018 10:23:42
  */
-public class CacophonyRemoteServer extends JFrame implements WindowListener, ActionListener
+public class CacophonyRemoteClient extends JFrame implements WindowListener, ActionListener
 {
 	// -----------------------------------------------------------------------------
 	public static void main(String[] args) throws Exception
 	{
-		CacophonyRemoteServer gui = new CacophonyRemoteServer();
+		CacophonyRemoteClient gui = new CacophonyRemoteClient();
 	}
 	// -----------------------------------------------------------------------------
 
 	private Settings cfg = new Settings( "cacophony.ini", XJava.dateStamp() + " - Settings for Cacophony by J.K." );
-	private SymphonyClient symphonyClient = null;
 	private SymphonyConnector symphonyConnector = null;
 
 	private JTextArea textArea = new JTextArea();
@@ -51,13 +49,15 @@ public class CacophonyRemoteServer extends JFrame implements WindowListener, Act
 	private String serviceName = defaultServiceName;
 	// -----------------------------------------------------------------------------
 
-	private int rmiPort = 1099;
+	// -----------------------------------------------------------------------------
+	public static final String defaultServiceIpAdress = "127.0.0.1";
+	private String serviceIpAddress = defaultServiceName;
 	private Registry reg = null;
 	private boolean rmiStarted;
 	// -----------------------------------------------------------------------------
 
 	// -----------------------------------------------------------------------------
-	public CacophonyRemoteServer() throws Exception
+	public CacophonyRemoteClient() throws Exception
 	{
 		initApp();
 	}
@@ -66,7 +66,7 @@ public class CacophonyRemoteServer extends JFrame implements WindowListener, Act
 	public void initApp()
 	{
 		setLayout(new BorderLayout());
-		setTitle( "Cacophony-RMI-Server" );
+		setTitle( "Cacophony-RMI-Client" );
 		
 		initTextArea();
 		initToolBar();
@@ -82,6 +82,7 @@ public class CacophonyRemoteServer extends JFrame implements WindowListener, Act
 	{
 		serviceTcpPort = cfg.getIntValue( "service.tcp.port", defaultServiceTcpPort, false );
 		serviceName = cfg.getStringValue( "service.name", defaultServiceName, false );
+		serviceIpAddress = cfg.getStringValue( "service.host.ip.address", "localhost", false );
 	}
 
 	// -----------------------------------------------------------------------------
@@ -111,9 +112,9 @@ public class CacophonyRemoteServer extends JFrame implements WindowListener, Act
 	// -----------------------------------------------------------------------------
 	private void initToolBar()
 	{
-		btnGo.setToolTipText( "start serving" );
-		btnStop.setToolTipText( "stop serving" );
-		btnInfo.setToolTipText( "show server info" );
+		btnGo.setToolTipText( "connect to server" );
+		btnStop.setToolTipText( "disconnect from server" );
+		btnInfo.setToolTipText( "show connection info" );
 		toolBar.add( btnGo );
 		toolBar.add( btnStop );
 		toolBar.add( btnInfo );
@@ -192,8 +193,9 @@ public class CacophonyRemoteServer extends JFrame implements WindowListener, Act
 	{
 		System.out.println( "--------------------------------------------------------------------------------" );
 		System.out.println( "RMI service information:" );
+		System.out.println( "\thost:\t" + serviceIpAddress );
+		System.out.println( "\tport:\t" + serviceTcpPort );
 		System.out.println( "\tname:\t" + serviceName );
-		System.out.println( "\tport: \t" + serviceTcpPort );
 		System.out.println( "\tstate:\t" + ( ( rmiStarted ) ? "online" : "offline" ) );
 		System.out.println( "--------------------------------------------------------------------------------" );
 	}
@@ -206,7 +208,6 @@ public class CacophonyRemoteServer extends JFrame implements WindowListener, Act
 		try
 		{
 			java.rmi.Naming.unbind( serviceName );
-			symphonyClient = null;
 			symphonyConnector = null;
 		}
 		catch (Exception e)
@@ -223,27 +224,22 @@ public class CacophonyRemoteServer extends JFrame implements WindowListener, Act
 		rmiStarted = false;
 		try
 		{
-			System.setProperty( "java.rmi.server.hostname", "127.0.0.1" );
-			symphonyClient = new SymphonyClient( cfg, true );
-			symphonyConnector = new SymphonyConnectorImplementation( symphonyClient );
-			reg = ( reg == null ) ? LocateRegistry.createRegistry( rmiPort ) : reg;
-			java.rmi.Naming.rebind( serviceName, symphonyConnector );
-			System.out.println(
-					"Serice is running now.\n" +
-							"Use '" + getServiceUrl( "localhost" ) + "' to connect from local client application\n" +
-							"or '" + getServiceUrl( "[IP-Address]" ) + "' to connect from remote applications." );
+			System.out.println( "trying to connect to remote service '" + getServiceUrl() + "' ... " );
+			reg = LocateRegistry.getRegistry( serviceIpAddress, serviceTcpPort );
+			symphonyConnector = (SymphonyConnector)reg.lookup( serviceName );
+			System.out.println( "successfully connected." );
 			setButtonStates( false, true );
 			rmiStarted = true;
 		}
 		catch (Exception e)
 		{
-			System.out.println( "failed to run rmi service." );
+			System.out.println( "failed to connect to the service '" + getServiceUrl() + "'!" );
 			e.printStackTrace();
 		}
 	}
 
-	public String getServiceUrl(String host)
+	public String getServiceUrl()
 	{
-		return "rmi://" + host + ":" + serviceTcpPort + "/" + serviceName;
+		return "rmi://" + serviceIpAddress + ":" + serviceTcpPort + "/" + serviceName;
 	}
 }

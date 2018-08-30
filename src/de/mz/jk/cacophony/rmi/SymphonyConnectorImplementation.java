@@ -6,8 +6,8 @@ import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 
 import de.mz.jk.cacophony.SymphonyClient;
-import de.mz.jk.cli.App;
 import de.mz.jk.jsix.libs.XFiles;
+import de.mz.jk.jsix.os.app.App;
 
 /**
  * <h3>{@link SymphonyConnectorImplementation}</h3>
