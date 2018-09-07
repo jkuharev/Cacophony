@@ -27,13 +27,13 @@ import de.mz.jk.jsix.utilities.Settings;
  * @author jkuharev
  * @version Mar 8, 2018 12:57:57 PM
  */
-public class Cacophony implements FileActionListener, ActionListener
+public class CacophonyLocal implements FileActionListener, ActionListener
 {
 	private SymphonyClient symphonyClient = new SymphonyClient();
 
 	public static void main(String[] args)
 	{
-		Cacophony c = new Cacophony();
+		CacophonyLocal c = new CacophonyLocal();
 	}
 
 	static String welcomeMessage = 
@@ -53,7 +53,7 @@ public class Cacophony implements FileActionListener, ActionListener
 	private JTextField fieldXmlFileView = new JTextField( "" );
 
 
-	public Cacophony()
+	public CacophonyLocal()
 	{
 		initConfig();
 		symphonyClient.cloneSymphonyClient();

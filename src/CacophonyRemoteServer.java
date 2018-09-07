@@ -1,7 +1,3 @@
-package de.mz.jk.cacophony;
-/** Cacophony, de.mz.jk.cacophony.rmi, 29.08.2018*/
-
-
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
@@ -13,6 +9,7 @@ import java.rmi.registry.Registry;
 
 import javax.swing.*;
 
+import de.mz.jk.cacophony.SymphonyClient;
 import de.mz.jk.cacophony.rmi.SymphonyConnector;
 import de.mz.jk.cacophony.rmi.SymphonyConnectorImplementation;
 import de.mz.jk.jsix.libs.XJava;
@@ -21,8 +18,8 @@ import de.mz.jk.jsix.utilities.Settings;
 
 /**
  * <h3>{@link CacophonyRemoteServer}</h3>
- * @author kuh1j
- * @version 29.08.2018 10:23:42
+ * @author Dr. Joerg Kuharev
+ * @version 07.09.2018
  */
 public class CacophonyRemoteServer extends JFrame implements WindowListener, ActionListener
 {

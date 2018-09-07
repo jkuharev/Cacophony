@@ -1,7 +1,3 @@
-package de.mz.jk.cacophony;
-/** Cacophony, de.mz.jk.cacophony.rmi, 29.08.2018*/
-
-
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
@@ -13,6 +9,7 @@ import java.rmi.registry.Registry;
 
 import javax.swing.*;
 
+import de.mz.jk.cacophony.rmi.CacophonyMainApplication;
 import de.mz.jk.cacophony.rmi.SymphonyConnector;
 import de.mz.jk.jsix.libs.XJava;
 import de.mz.jk.jsix.ui.JTextAreaOutputStream;
@@ -20,8 +17,8 @@ import de.mz.jk.jsix.utilities.Settings;
 
 /**
  * <h3>{@link CacophonyRemoteClient}</h3>
- * @author kuh1j
- * @version 29.08.2018 10:23:42
+ * @author Dr. Joerg Kuharev
+ * @version 07.09.2018
  */
 public class CacophonyRemoteClient extends JFrame implements WindowListener, ActionListener
 {
@@ -55,6 +52,7 @@ public class CacophonyRemoteClient extends JFrame implements WindowListener, Act
 	private Registry reg = null;
 	private boolean rmiStarted;
 	// -----------------------------------------------------------------------------
+	private CacophonyMainApplication theApp = null;
 
 	// -----------------------------------------------------------------------------
 	public CacophonyRemoteClient() throws Exception
@@ -70,12 +68,14 @@ public class CacophonyRemoteClient extends JFrame implements WindowListener, Act
 		
 		initTextArea();
 		initToolBar();
-		initStatusBar();
 		
 		setSize(600, 400);
 		setVisible(true);
 		addWindowListener( this );
 		initConfig();
+
+		theApp = new CacophonyMainApplication( cfg );
+		theApp.addToWindow( this );
 	}
 
 	private void initConfig()
@@ -83,20 +83,6 @@ public class CacophonyRemoteClient extends JFrame implements WindowListener, Act
 		serviceTcpPort = cfg.getIntValue( "service.tcp.port", defaultServiceTcpPort, false );
 		serviceName = cfg.getStringValue( "service.name", defaultServiceName, false );
 		serviceIpAddress = cfg.getStringValue( "service.host.ip.address", "localhost", false );
-	}
-
-	// -----------------------------------------------------------------------------
-	public void setStatus(String text)
-	{
-		statusBar.setText( text );
-	}
-
-	// -----------------------------------------------------------------------------
-	private void initStatusBar()
-	{
-		statusBar.setBorder( BorderFactory.createLoweredBevelBorder() );
-		add( statusBar, BorderLayout.SOUTH );
-		setStatus( " " );
 	}
 
 	// -----------------------------------------------------------------------------
@@ -209,6 +195,7 @@ public class CacophonyRemoteClient extends JFrame implements WindowListener, Act
 		{
 			java.rmi.Naming.unbind( serviceName );
 			symphonyConnector = null;
+			theApp.setSymphonyConnector( symphonyConnector );
 		}
 		catch (Exception e)
 		{}
@@ -230,6 +217,7 @@ public class CacophonyRemoteClient extends JFrame implements WindowListener, Act
 			System.out.println( "successfully connected." );
 			setButtonStates( false, true );
 			rmiStarted = true;
+			theApp.setSymphonyConnector( symphonyConnector );
 		}
 		catch (Exception e)
 		{
