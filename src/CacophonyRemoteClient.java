@@ -1,18 +1,23 @@
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.io.File;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
+import java.util.List;
 
-import javax.swing.*;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JToolBar;
 
 import de.mz.jk.cacophony.rmi.CacophonyMainApplication;
 import de.mz.jk.cacophony.rmi.SymphonyConnector;
 import de.mz.jk.jsix.libs.XJava;
-import de.mz.jk.jsix.ui.JTextAreaOutputStream;
+import de.mz.jk.jsix.ui.TextWindowDragAndDropUI;
+import de.mz.jk.jsix.ui.TextWindowDragAndDropUI.FileActionListener;
 import de.mz.jk.jsix.utilities.Settings;
 
 /**
@@ -20,7 +25,7 @@ import de.mz.jk.jsix.utilities.Settings;
  * @author Dr. Joerg Kuharev
  * @version 07.09.2018
  */
-public class CacophonyRemoteClient extends JFrame implements WindowListener, ActionListener
+public class CacophonyRemoteClient implements WindowListener, ActionListener, FileActionListener
 {
 	// -----------------------------------------------------------------------------
 	public static void main(String[] args) throws Exception
@@ -29,10 +34,11 @@ public class CacophonyRemoteClient extends JFrame implements WindowListener, Act
 	}
 	// -----------------------------------------------------------------------------
 
+	private TextWindowDragAndDropUI ui = null;
 	private Settings cfg = new Settings( "cacophony.ini", XJava.dateStamp() + " - Settings for Cacophony by J.K." );
 	private SymphonyConnector symphonyConnector = null;
 
-	private JTextArea textArea = new JTextArea();
+// private JTextArea textArea = new JTextArea();
 	private JToolBar toolBar = new JToolBar();
 	private JButton btnGo = new JButton( "[ > ]" );
 	private JButton btnStop = new JButton( "[ x ]" );
@@ -63,19 +69,17 @@ public class CacophonyRemoteClient extends JFrame implements WindowListener, Act
 	// -----------------------------------------------------------------------------
 	public void initApp()
 	{
-		setLayout(new BorderLayout());
-		setTitle( "Cacophony-RMI-Client" );
-		
-		initTextArea();
-		initToolBar();
-		
-		setSize(600, 400);
-		setVisible(true);
-		addWindowListener( this );
-		initConfig();
+		ui = new TextWindowDragAndDropUI( "Cacophony-RMI-Client", 600, 400, "" );
+		ui.addFileActionListener( this );
 
+		JFrame win = ui.getWin();
+		win.addWindowListener( this );
+
+		initConfig();
 		theApp = new CacophonyMainApplication( cfg );
-		theApp.addToWindow( this );
+
+		win.add( getToolBar(), BorderLayout.NORTH );
+		win.add( theApp.getUI(), BorderLayout.SOUTH );
 	}
 
 	private void initConfig()
@@ -84,19 +88,10 @@ public class CacophonyRemoteClient extends JFrame implements WindowListener, Act
 		serviceName = cfg.getStringValue( "service.name", defaultServiceName, false );
 		serviceIpAddress = cfg.getStringValue( "service.host.ip.address", "localhost", false );
 	}
+	// -----------------------------------------------------------------------------
 
 	// -----------------------------------------------------------------------------
-	private void initTextArea()
-	{
-		textArea.setEditable( false );
-		textArea.setBackground( Color.DARK_GRAY );
-		textArea.setForeground( Color.GREEN );
-		new JTextAreaOutputStream( textArea, true, true );
-		add( new JScrollPane( textArea ), BorderLayout.CENTER );
-	}
-
-	// -----------------------------------------------------------------------------
-	private void initToolBar()
+	private JToolBar getToolBar()
 	{
 		btnGo.setToolTipText( "connect to server" );
 		btnStop.setToolTipText( "disconnect from server" );
@@ -113,7 +108,7 @@ public class CacophonyRemoteClient extends JFrame implements WindowListener, Act
 		btnStop.addActionListener( this );
 		btnInfo.addActionListener( this );
 		btnClear.addActionListener( this );
-		add( toolBar, BorderLayout.NORTH );
+		return toolBar;
 	}
 	
 	private void setButtonStates(boolean run, boolean stop)
@@ -169,7 +164,7 @@ public class CacophonyRemoteClient extends JFrame implements WindowListener, Act
 	 */
 	private void clearScreen()
 	{
-		textArea.setText( "" );
+		ui.getOutputTextArea().setText( "" );
 	}
 
 	/**
@@ -229,5 +224,25 @@ public class CacophonyRemoteClient extends JFrame implements WindowListener, Act
 	public String getServiceUrl()
 	{
 		return "rmi://" + serviceIpAddress + ":" + serviceTcpPort + "/" + serviceName;
+	}
+
+	@Override public List<File> filterTargetFiles(List<File> files)
+	{
+		if (rmiStarted && theApp != null)
+		{
+			return files;
+		}
+		// 
+		System.out.println( "can not process dropped files... ");
+		System.out.println( "please establish a connection to the server and try again." );
+		return null;
+	}
+
+	@Override public void doMultiFileAction(List<File> files)
+	{}
+
+	@Override public void doSingleFileAction(File file)
+	{
+		theApp.addFile( file );
 	}
 }

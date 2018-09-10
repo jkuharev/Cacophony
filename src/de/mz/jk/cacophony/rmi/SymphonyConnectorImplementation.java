@@ -2,6 +2,7 @@
 package de.mz.jk.cacophony.rmi;
 
 import java.io.File;
+import java.io.Serializable;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 
@@ -14,7 +15,7 @@ import de.mz.jk.jsix.os.app.App;
  * @author Dr. Joerg Kuharev
  * @version 27.08.2018 09:42:33
  */
-public class SymphonyConnectorImplementation extends UnicastRemoteObject implements SymphonyConnector
+public class SymphonyConnectorImplementation extends UnicastRemoteObject implements SymphonyConnector, Serializable
 {
 	private SymphonyClient symphonyClient = null;
 
