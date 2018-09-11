@@ -220,7 +220,8 @@ public class CacophonyRemoteServer extends JFrame implements WindowListener, Act
 		rmiStarted = false;
 		try
 		{
-			System.setProperty( "java.rmi.server.hostname", "127.0.0.1" );
+			// next line is the evil for everyone trying to run the app remotely
+			// System.setProperty( "java.rmi.server.hostname", "127.0.0.1" );
 			symphonyClient = new SymphonyClient( cfg, true );
 			symphonyConnector = new SymphonyConnectorImplementation( symphonyClient );
 			reg = ( reg == null ) ? LocateRegistry.createRegistry( rmiPort ) : reg;
