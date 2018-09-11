@@ -13,7 +13,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JToolBar;
 
-import de.mz.jk.cacophony.rmi.CacophonyMainApplication;
+import de.mz.jk.cacophony.CacophonyMainApplication;
 import de.mz.jk.cacophony.rmi.SymphonyConnector;
 import de.mz.jk.jsix.libs.XJava;
 import de.mz.jk.jsix.ui.TextWindowDragAndDropUI;
@@ -69,7 +69,7 @@ public class CacophonyRemoteClient implements WindowListener, ActionListener, Fi
 	// -----------------------------------------------------------------------------
 	public void initApp()
 	{
-		ui = new TextWindowDragAndDropUI( "Cacophony-RMI-Client", 600, 400, "" );
+		ui = new TextWindowDragAndDropUI( "Cacophony-Client (build " + CacophonyMainApplication.build + ")", 600, 400, "" );
 		ui.addFileActionListener( this );
 
 		JFrame win = ui.getWin();

@@ -1,5 +1,5 @@
 /** Cacophony, de.mz.jk.cacophony.rmi, Sep 7, 2018*/
-package de.mz.jk.cacophony.rmi;
+package de.mz.jk.cacophony;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -12,6 +12,7 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+import de.mz.jk.cacophony.rmi.SymphonyConnector;
 import de.mz.jk.jsix.utilities.Settings;
 
 /**
@@ -21,6 +22,8 @@ import de.mz.jk.jsix.utilities.Settings;
  */
 public class CacophonyMainApplication implements ActionListener
 {
+	public static final String build = "20180911";
+
 	private SymphonyConnector symphonyConnector = null;
 	private Set<File> rawFiles = new TreeSet<>();
 	private File xmlFile = null;

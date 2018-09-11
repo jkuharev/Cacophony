@@ -9,6 +9,7 @@ import java.rmi.registry.Registry;
 
 import javax.swing.*;
 
+import de.mz.jk.cacophony.CacophonyMainApplication;
 import de.mz.jk.cacophony.SymphonyClient;
 import de.mz.jk.cacophony.rmi.SymphonyConnector;
 import de.mz.jk.cacophony.rmi.SymphonyConnectorImplementation;
@@ -63,7 +64,7 @@ public class CacophonyRemoteServer extends JFrame implements WindowListener, Act
 	public void initApp()
 	{
 		setLayout(new BorderLayout());
-		setTitle( "Cacophony-RMI-Server" );
+		setTitle( "Cacophony-Server (build " + CacophonyMainApplication.build + ")" );
 		
 		initTextArea();
 		initToolBar();
