@@ -80,6 +80,8 @@ public class CacophonyRemoteClient implements WindowListener, ActionListener, Fi
 
 		win.add( getToolBar(), BorderLayout.NORTH );
 		win.add( theApp.getUI(), BorderLayout.SOUTH );
+
+		win.setVisible( true );
 	}
 
 	private void initConfig()
