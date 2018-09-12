@@ -24,6 +24,21 @@ import de.mz.jk.jsix.utilities.Settings;
  */
 public class CacophonyRemoteServer extends JFrame implements WindowListener, ActionListener
 {
+	private static String endl = "\n";
+	private static String msg = ""
+			+ "= = = = = = = = = = = = = = = = = = = = = = = = = = = = = = " + endl
+			+ "'THE BEER-WARE LICENSE':" + endl
+			+ "As long as you retain this notice you can do" + endl
+			+ "whatever you want with this application." + endl
+			+ "If we meet some day & you think that Cacophony" + endl
+			+ "is worth it, you can buy me a beer in return." + endl
+			+ "(c) Joerg Kuharev, 2018" + endl
+			+ "= = = = = = = = = = = = = = = = = = = = = = = = = = = = = = " + endl + endl
+			+ "Let's play:" + endl
+			+ "- set params in the config file" + endl
+			+ "- start serving" + endl
+			+ "- use Cacophony clients" + endl + endl;
+
 	// -----------------------------------------------------------------------------
 	public static void main(String[] args) throws Exception
 	{
@@ -74,6 +89,7 @@ public class CacophonyRemoteServer extends JFrame implements WindowListener, Act
 		setVisible(true);
 		addWindowListener( this );
 		initConfig();
+		System.out.println( msg );
 	}
 
 	private void initConfig()
