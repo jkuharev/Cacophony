@@ -22,7 +22,7 @@ import de.mz.jk.jsix.utilities.Settings;
  */
 public class CacophonyMainApplication implements ActionListener
 {
-	public static final String build = "20180911";
+	public static final String build = "20180912";
 
 	private SymphonyConnector symphonyConnector = null;
 	private Set<File> rawFiles = new TreeSet<>();
