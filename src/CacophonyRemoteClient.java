@@ -27,6 +27,22 @@ import de.mz.jk.jsix.utilities.Settings;
  */
 public class CacophonyRemoteClient implements WindowListener, ActionListener, FileActionListener
 {
+	private static String endl = "\n";
+	private static String msg = ""
+			+ "= = = = = = = = = = = = = = = = = = = = = = = = = = = = = = " + endl
+			+ "'THE BEER-WARE LICENSE':" + endl
+			+ "As long as you retain this notice you can do" + endl
+			+ "whatever you want with this application." + endl
+			+ "If we meet some day & you think that Cacophony" + endl
+			+ "is worth it, you can buy me a beer in return." + endl
+			+ "(c) Joerg Kuharev, 2018" + endl
+			+ "= = = = = = = = = = = = = = = = = = = = = = = = = = = = = = " + endl + endl
+			+ "Let's play:" + endl
+			+ "- edit configuration file" + endl
+			+ "- connect to the server" + endl
+			+ "- drag and drop files" + endl
+			+ "- click RUN" + endl + endl;
+
 	// -----------------------------------------------------------------------------
 	public static void main(String[] args) throws Exception
 	{
@@ -69,7 +85,7 @@ public class CacophonyRemoteClient implements WindowListener, ActionListener, Fi
 	// -----------------------------------------------------------------------------
 	public void initApp()
 	{
-		ui = new TextWindowDragAndDropUI( "Cacophony-Client (build " + CacophonyMainApplication.build + ")", 600, 400, "" );
+		ui = new TextWindowDragAndDropUI( "Cacophony-Client (build " + CacophonyMainApplication.build + ")", 600, 400, msg );
 		ui.addFileActionListener( this );
 
 		JFrame win = ui.getWin();
