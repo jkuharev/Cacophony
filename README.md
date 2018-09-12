@@ -9,7 +9,7 @@ Cacophony - the inharmonious sibling of symphony.
   As long as you retain this notice you can do whatever you want
   with this application.
   
-  If we meet some day & you think that ezRunner is worth it, 
+  If we meet some day & you think that Cacophony is worth it, 
   you can buy me a beer in return.
 ~~~
 **© Dr. Jørg Kuharev, 2018**
