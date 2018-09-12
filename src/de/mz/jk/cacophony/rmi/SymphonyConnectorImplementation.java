@@ -27,25 +27,30 @@ public class SymphonyConnectorImplementation extends UnicastRemoteObject impleme
 
 	@Override public boolean fileExists(File file) throws Exception
 	{
-		return file != null && file.exists();
+		boolean res = file.exists();
+		System.out.println( "Testing file ... " + file.getAbsolutePath() + "..." + ( res ? "[found]" : "[not found]" ) );
+		return res;
 	}
 
 	@Override public boolean isValidRawFile(File file) throws Exception
 	{
+		boolean res = false;
 		if (file.exists() && file.isDirectory())
 		{
 			File externInf = new File( file, "_extern.inf" );
 			File headerTxt = new File( file, "_HEADER.txt" );
-			return externInf.exists() && headerTxt.exists();
+			res = externInf.exists() && headerTxt.exists();
 		}
-		return false;
+		System.out.println( "Testing raw file ... " + file.getAbsolutePath() + "..." + ( res ? "[valid]" : "[invalid]" ) );
+		return res;
 	}
 
 	@Override public boolean isValidPipelineXMLFile(File file) throws Exception
 	{
+		boolean res = false;
 		try
 		{
-			return ( file.exists() &&
+			res = ( file.exists() &&
 					file.isFile() &&
 					file.canRead() &&
 					file.getName().toLowerCase().endsWith( ".xml" ) &&
@@ -53,15 +58,21 @@ public class SymphonyConnectorImplementation extends UnicastRemoteObject impleme
 		}
 		catch (Exception e)
 		{}
-		return false;
+		System.out.println( "Testing XML file ... " + file.getAbsolutePath() + "..." + ( res ? "[valid]" : "[invalid]" ) );
+		return res;
 	}
 
 	@Override public void executeSymphonyPipeline(File xml, File raw) throws Exception
 	{
+		System.out.println( "Executing pipeline ... " );
+		System.out.println( "XML:	" + xml.getAbsolutePath() );
+		System.out.println( "RAW:	" + raw.getAbsolutePath() );
 		App app = new App();
 		app.setExe( symphonyClient.absSymphonyFile( symphonyClient.getMassLynxSymphonyClientCloneExe() ).getAbsolutePath() );
 		app.addParam( xml.getAbsolutePath() );
 		symphonyClient.writeInputFile( raw, xml );
 		app.execute( true );
+		System.out.println( "done!" );
+		System.out.println( "************************************************************" );
 	}
 }
